@@ -1,2 +1,2 @@
-# yay-hello
+# Yay Hello Plugin
 Yay Hello Plugin
