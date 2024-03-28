@@ -3,49 +3,35 @@
 /**
  * The plugin bootstrap file
  *
- * @link              https://yaycommerce.vn
+ * @link              https://yaycommerce.com
  * @since             1.0.0
  * @package           Yay_Hello
  *
  * @wordpress-plugin
  * Plugin Name:       Yay Hello
- * Plugin URI:         https://yaycommerce.vn/
+ * Plugin URI:        https://yaycommerce.com
  * Description:       For training purpose
  * Version:           1.0.0
  * Author:            Gabriel Do
- * Author URI:        https://yaycommerce.vn/
- * License:           GPL-2.0+
- * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain:       yay-hello
- * Domain Path:       /languages
+ * Author URI:        https://yaycommerce.com
  */
 
-// If this file is called directly, abort.
-if (!defined('WPINC')) {
-	die;
-}
+defined('ABSPATH') || exit;
 
-/**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
- */
 define('YAY_HELLO_VERSION', '1.0.0');
 
-/**
- * The code that runs during plugin activation.
- * This action is documented in includes/class-yay-hello-activator.php
- */
+require_once(dirname(__FILE__) . '/includes/class-yay-hello-modify-post-title.php');
+require_once(dirname(__FILE__) . '/includes/class-yay-hello-shortcode.php');
+require_once(dirname(__FILE__) . '/includes/class-yay-hello-discount-cart-items.php');
+require_once ABSPATH . '/wp-admin/includes/plugin.php';
+require_once ABSPATH . WPINC . '/pluggable.php';
+
 function activate_yay_hello()
 {
 	require_once plugin_dir_path(__FILE__) . 'includes/class-yay-hello-activator.php';
 	Yay_Hello_Activator::activate();
 }
 
-/**
- * The code that runs during plugin deactivation.
- * This action is documented in includes/class-yay-hello-deactivator.php
- */
 function deactivate_yay_hello()
 {
 	require_once plugin_dir_path(__FILE__) . 'includes/class-yay-hello-deactivator.php';
@@ -55,25 +41,16 @@ function deactivate_yay_hello()
 register_activation_hook(__FILE__, 'activate_yay_hello');
 register_deactivation_hook(__FILE__, 'deactivate_yay_hello');
 
-/**
- * The core plugin class that is used to define internationalization,
- * admin-specific hooks, and public-facing site hooks.
- */
-require plugin_dir_path(__FILE__) . 'includes/class-yay-hello.php';
-
-/**
- * Begins execution of the plugin.
- *
- * Since everything within the plugin is registered via hooks,
- * then kicking off the plugin from this point in the file does
- * not affect the page life cycle.
- *
- * @since    1.0.0
- */
-function run_yay_hello()
+function init()
 {
+	$modifier = PostTitleModifier::getInstance();
+	$modifier->apply();
 
-	$plugin = new Yay_Hello();
-	$plugin->run();
+	$shortcode_gabriel = ShortCodeGabriel::getInstance();
+	$shortcode_gabriel->apply_the_shortcode();
+
+	$discount_by_items = DiscountByCartItems::getInstance();
+	$discount_by_items->apply_discount_by_cart_items();
 }
-run_yay_hello();
+
+add_action('plugins_loaded', 'init');
