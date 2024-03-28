@@ -22,7 +22,6 @@
  */
 class Yay_Hello_Activator
 {
-
 	public static function activate()
 	{
 	}

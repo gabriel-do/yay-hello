@@ -22,7 +22,6 @@
  */
 class Yay_Hello_Deactivator
 {
-
 	public static function deactivate()
 	{
 	}
