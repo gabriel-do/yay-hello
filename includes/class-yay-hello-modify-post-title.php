@@ -8,6 +8,7 @@ class PostTitleModifier
 
     private function __construct()
     {
+        add_filter('the_title', array($this, 'change_title'), 10, 2);
     }
 
     public static function getInstance()
@@ -18,15 +19,12 @@ class PostTitleModifier
         return self::$instance;
     }
 
-    public function apply()
+
+    public function change_title($title, $id)
     {
-        add_filter('the_title', 'change_title', 10, 2);
-        function change_title($title, $id)
-        {
-            if (is_admin() && get_post_type($id) === "post") {
-                $title = 'Hello World - ' . $title;
-            }
-            return $title;
+        if (is_admin() && get_post_type($id) === "post") {
+            $title = 'Hello World - ' . $title;
         }
+        return $title;
     }
 }
